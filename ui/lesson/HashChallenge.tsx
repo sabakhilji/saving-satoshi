@@ -147,6 +147,20 @@ export default function HashChallenge({
                 ref={inputRef}
                 onChange={handleChange}
               />
+              <div
+                className={clsx(
+                  'text-left transition-opacity duration-[2500ms] ease-in-out md:text-center',
+                  {
+                    'opacity-100':
+                      answerHint && hintTooltip && success !== true,
+                    'invisible opacity-0': !hintTooltip,
+                  }
+                )}
+              >
+                <span>
+                  {t(`chapter_two.hashing_${challengeIdWord}.hint_prompt`)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -162,19 +176,6 @@ export default function HashChallenge({
                 label={returnLabel}
                 input={input}
               />
-            </div>
-            <div
-              className={clsx(
-                'text-left transition-opacity duration-[2500ms] ease-in-out md:text-center',
-                {
-                  'opacity-100': answerHint && hintTooltip && success !== true,
-                  'invisible opacity-0': !hintTooltip,
-                }
-              )}
-            >
-              <span>
-                {t(`chapter_two.hashing_${challengeIdWord}.hint_prompt`)}
-              </span>
             </div>
           </div>
         </div>
