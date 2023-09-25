@@ -528,8 +528,14 @@ const translations = {
       'A mysterious billionaire is claiming to be Satoshi Nakamoto. Why would Satoshi come forward after all this time? What are the chances Satoshi is even alive?',
     paragraph_two:
       'While the public debate is largely focused on the spectacle, you have an inkling that it might be possible to disarm the claim using your knowledge of cryptography.',
-  },
+  
+    intro: {
+      title:'Public key',
+      paragraph_one: "You realize that you never claimed the mining rewards from your competition with BitRey. You decide them to help pay for your flight back home. Let's learn how that works!",
+      paragraph_three:'According to the mining pool, it looks like you have 6.1 bitcoin to claim from all the work you did earlier. We just need to find a way to get it into your wallet... ',
 
+    }
+  },
   chapter_five: {
     title: 'The keyholder',
   },
