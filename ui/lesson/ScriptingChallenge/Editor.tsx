@@ -3,9 +3,9 @@
 import clsx from 'clsx'
 
 import MonacoEditor from '@monaco-editor/react'
-
+import * as monaco from 'monaco-editor';
 import { monacoOptions } from './config'
-import { monaco } from 'react-monaco-editor'
+//import { monaco } from 'react-monaco-editor'
 import { useEffect, useRef, useState } from 'react'
 import { Loader } from 'shared'
 import { LessonView } from 'types'
@@ -31,18 +31,53 @@ export default function Editor({
   constraints: any
   hiddenRange?: number[]
 }) {
+  const decorations: monaco.editor.IModelDeltaDecoration[] = [];
   const { activeView } = useLessonContext()
   const isActive = activeView === LessonView.Code
   const [loading, setLoading] = useState<boolean>(true)
   const [options, setOptions] = useState(monacoOptions)
   const monacoRef = useRef<any>()
-
+  
   const createMonacoOptions = (range) => {
     return {
       ...monacoOptions,
       lineNumbers: (lineNumber: number) => (lineNumber - range).toString(),
     }
   }
+   function convertLinksToDecorations(model: monaco.editor.ITextModel): monaco.editor.IModelDeltaDecoration[] {
+    const linkPattern = /(https?:\/\/[^\s]+)/g;
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    const lines = model.getLinesContent();
+
+    lines.forEach((line, lineNumber) => {
+        let match;
+        while ((match = linkPattern.exec(line)) !== null) {
+            decorations.push({
+                range: new monaco.Range(lineNumber + 1, match.index + 1, lineNumber + 1, match.index + 1 + match[0].length),
+                options: {
+                    inlineClassName: 'link-style',
+                    stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+                }
+            });
+        }
+    });
+
+    return decorations;
+}
+
+function handleLinkClick(e, editor) {
+    if (e.target.position) {
+        const { lineNumber, column } = e.target.position;
+        const model = editor.getModel();
+        const lineContent = model.getLineContent(lineNumber);
+        const linkPattern = /(https?:\/\/[^\s]+)/;
+        const match = linkPattern.exec(lineContent);
+
+        if (match && column >= match.index + 1 && column <= match.index + 1 + match[0].length) {
+            window.open(match[0], '_blank');
+        }
+    }
+}
 
   const handleBeforeMount = (monaco) => {
     hiddenRange && setOptions(createMonacoOptions(hiddenRange[2]))
@@ -76,6 +111,20 @@ export default function Editor({
     const constrainedInstance = constrainedEditor(monaco)
     constrainedInstance.initializeIn(editor)
     constrainedInstance.addRestrictionsTo(model, constraints)
+    // Handle link clicks
+    editor.onMouseDown(e => {
+      if (e.target.position) {
+          const { lineNumber, column } = e.target.position;
+          const lineContent = editor.getModel().getLineContent(lineNumber);
+          const linkPattern = /(https?:\/\/[^\s]+)/g;
+          let match;
+          while ((match = linkPattern.exec(lineContent)) !== null) {
+              if (column >= match.index + 1 && column <= match.index + 1 + match[0].length) {
+                  window.open(match[0], '_blank');
+              }
+          }
+      }
+  });
   }
 
   const isSmallScreen = useMediaQuery({ width: 767 })
