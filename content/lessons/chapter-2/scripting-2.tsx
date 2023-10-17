@@ -22,7 +22,7 @@ const javascript = {
 
 // Create a program that finds a sha256 hash starting with 5 zeroes.
 // To submit your answer, log it to the terminal using console.log().
-
+//https://bolt.fun/story/lol2-update-2--1154  (this is for testing)
 // Type your code here
 `,
   validate: async (answer) => {
