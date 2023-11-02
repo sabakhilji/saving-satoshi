@@ -104,9 +104,7 @@ function handleLinkClick(e, editor) {
       ])
     monaco.editor.setTheme('satoshi')
     setLoading(false)
-
     monacoRef.current = { monaco, editor }
-
     const model = editor.getModel()
     const constrainedInstance = constrainedEditor(monaco)
     constrainedInstance.initializeIn(editor)
